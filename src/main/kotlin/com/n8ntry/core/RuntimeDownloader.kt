@@ -22,7 +22,8 @@ data class RuntimeMetadata(
 
 object RuntimeDownloader {
     private const val TAG = "RuntimeDownloader"
-    private const val RELEASE_API_URL = "https://api.github.com/repos/n8n-mobile/n8ntry/releases/latest" // Placeholder URL
+    private const val RELEASE_API_URL = "https://api.github.com/repos/shakedhalachmi-create/n8ntry/releases/latest" 
+    // For V1.6 we might hardcode or fetch from a known endpoint.
     // For V1.6 we might hardcode or fetch from a known endpoint. 
     // The user requirement says "Use the GitHub Releases API".
     
