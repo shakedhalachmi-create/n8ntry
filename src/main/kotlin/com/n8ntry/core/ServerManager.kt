@@ -261,6 +261,7 @@ class ServerManager(
         env["PATH"] = "${File(runtimeRoot, "bin").absolutePath}:${System.getenv("PATH")}"
         env["N8N_PORT"] = PORT
         env["N8N_HOST"] = "127.0.0.1"
+        env["N8N_LISTEN_ADDRESS"] = "127.0.0.1"
         env["N8N_ENCRYPTION_KEY"] = encryptionKey
         env["DB_TYPE"] = "sqlite"
         env["NODE_OPTIONS"] = "--max-old-space-size=512" // Default legacy profile

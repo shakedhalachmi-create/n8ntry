@@ -81,10 +81,20 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     // Actions
     fun toggleServer() {
         val currentState = serverState.value
+        val context = getApplication<Application>()
         if (currentState == ServerState.RUNNING) {
-            serverManager.stopServer()
+            context.startService(Intent(context, com.n8ntry.core.N8nForegroundService::class.java).apply {
+                action = com.n8ntry.core.N8nForegroundService.ACTION_STOP
+            })
         } else if (currentState == ServerState.STOPPED || currentState == ServerState.FATAL_ERROR || currentState == ServerState.ERROR_MISSING_RUNTIME) {
-            serverManager.startServer()
+            val intent = Intent(context, com.n8ntry.core.N8nForegroundService::class.java).apply {
+                action = com.n8ntry.core.N8nForegroundService.ACTION_START
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent)
+            } else {
+                context.startService(intent)
+            }
         }
     }
 
