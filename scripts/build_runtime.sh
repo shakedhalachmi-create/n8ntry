@@ -27,15 +27,20 @@ cd build_work
 
 echo ">>> Fetching Termux Packages index..."
 # We need 'Packages' file to find the filenames
-wget -q "https://packages.termux.dev/apt/termux-main/dists/stable/main/binary-$ARCH/Packages" -O Packages
+# We need 'Packages' file to find the filenames
+wget -q "https://packages.termux.dev/apt/termux-main/dists/stable/main/binary-$ARCH/Packages.gz" -O Packages.gz
+gunzip Packages.gz
 
 check_and_download() {
     local pkg_name=$1
     echo ">>> resolving $pkg_name..."
-    local filename=$(grep -A 5 "Package: $pkg_name" Packages | grep "Filename:" | head -n 1 | awk '{print $2}')
+    # Use awk to parse the stanza for the specific package
+    local filename=$(awk -v pkg="$pkg_name" 'BEGIN{RS=""; FS="\n"} $0 ~ "Package: " pkg { for(i=1;i<=NF;i++) { if($i ~ /^Filename: /) { print substr($i, 11); exit } } }' Packages)
     
     if [ -z "$filename" ]; then
         echo "Error: Could not find package $pkg_name in index"
+        # Debug: Dump grep if failed
+        grep "Package: $pkg_name" Packages || echo "Package not found in grep either"
         exit 1
     fi
     
