@@ -34,8 +34,12 @@ gunzip Packages.gz
 check_and_download() {
     local pkg_name=$1
     echo ">>> resolving $pkg_name..."
-    # Use awk to parse the stanza for the specific package
-    local filename=$(awk -v pkg="$pkg_name" 'BEGIN{RS=""; FS="\n"} $0 ~ "Package: " pkg { for(i=1;i<=NF;i++) { if($i ~ /^Filename: /) { print substr($i, 11); exit } } }' Packages)
+    # Use awk state machine to find the specific package's filename
+    # Logic: Find exact "Package: <name>" line, set flag, print Filename when found, stop at next Package or EOF.
+    local filename=$(awk -v pkg="$pkg_name" '
+        /^Package: / { if ($2 == pkg) { inside=1 } else { inside=0 } }
+        inside && /^Filename: / { print $2; exit }
+    ' Packages)
     
     if [ -z "$filename" ]; then
         echo "Error: Could not find package $pkg_name in index"
