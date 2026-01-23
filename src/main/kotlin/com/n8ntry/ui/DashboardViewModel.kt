@@ -90,10 +90,14 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
             val intent = Intent(context, com.n8ntry.core.N8nForegroundService::class.java).apply {
                 action = com.n8ntry.core.N8nForegroundService.ACTION_START
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent)
-            } else {
-                context.startService(intent)
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    context.startForegroundService(intent)
+                } else {
+                    context.startService(intent)
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("DashboardViewModel", "Failed to start service", e)
             }
         }
     }
