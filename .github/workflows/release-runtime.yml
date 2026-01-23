@@ -1,0 +1,46 @@
+name: Release Runtime
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget tar binutils 
+          # deb extraction uses 'ar' which is in binutils
+      
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build Runtime
+        run: |
+          chmod +x scripts/build_runtime.sh
+          ./scripts/build_runtime.sh
+          
+      - name: Verify build artifacts
+        run: |
+          ls -l n8n-android-arm64.tar.gz metadata.json
+          cat metadata.json
+          
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            n8n-android-arm64.tar.gz
+            metadata.json
