@@ -136,7 +136,7 @@ cat <<EOF > "$METADATA_FILE"
   "version": "$VERSION_TAG",
   "n8n_version": "$N8N_VERSION",
   "sha256": "$SHA256",
-  "download_url": "https://github.com/\$GITHUB_REPOSITORY/releases/download/\$GITHUB_REF_NAME/$ARTIFACT_NAME",
+  "download_url": "https://github.com/$GITHUB_REPOSITORY/releases/download/$GITHUB_REF_NAME/$ARTIFACT_NAME",
   "built_at": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 }
 EOF
