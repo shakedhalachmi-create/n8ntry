@@ -4,6 +4,8 @@ on:
   push:
     tags:
       - 'v*'
+    branches:
+      - 'main'
 
 permissions:
   contents: write
@@ -20,7 +22,6 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y wget tar binutils 
-          # deb extraction uses 'ar' which is in binutils
       
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -37,6 +38,14 @@ jobs:
           ls -l n8n-android-arm64.tar.gz metadata.json
           cat metadata.json
           
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+            name: n8n-android-runtime
+            path: |
+                n8n-android-arm64.tar.gz
+                metadata.json
+
       - name: Upload Release Assets
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
