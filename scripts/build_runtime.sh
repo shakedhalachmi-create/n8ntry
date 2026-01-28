@@ -342,9 +342,10 @@ cat <<EOF > "$METADATA_FILE"
 }
 EOF
 
-# Move artifacts to root of script output
-mv "$ARTIFACT_NAME" ../
-mv "$METADATA_FILE" ../
+# Sync artifacts to ensure they are available in the root
+# Note: They are already created in ROOT_DIR (which is likely the repo root)
+echo ">>> Artifacts created in $(pwd): $ARTIFACT_NAME, $METADATA_FILE"
+ls -l "$ARTIFACT_NAME" "$METADATA_FILE"
 
 
 
